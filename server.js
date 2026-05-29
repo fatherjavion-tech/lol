@@ -1,3 +1,66 @@
-// FILE: server.js (OBFUSCATED - WORKING FILE SERVING)
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
 
-const http=require('http'),fs=require('fs'),path=require('path');const _0x4a2c=['__dirname','TELEGRAM_BOT_TOKEN','TELEGRAM_CHAT_ID','PORT','split','replace','POST','/save','data','end','JSON','parse','appendFileSync','submissions.json','stringify','writeHead','readFile','startsWith','extname','text/html','utf8','listen','toString'];(function(_0x2d1a67){const _0x4a2cd5=function(_0x2b8e32){this['_0x2b8e32']=_0x2b8e32;};_0x4a2cd5['prototype']['_0x3a7c']=function(){return this['_0x2b8e32'];};return new _0x4a2cd5(_0x2d1a67);})(process['env'][_0x4a2c[2]]||'');const _0x52e84c={'.html':_0x4a2c[18],'.css':'text/css','.js':'application/javascript','.svg':'image/svg+xml','.ico':'image/x-icon','.png':'image/png','.jpg':'image/jpeg'};const _0x1f5e3=(_0x3e7c82)=>{const _0x5f1a=`<script>const TELEGRAM_BOT_TOKEN='${process['env'][_0x4a2c[1]]||''}';const TELEGRAM_CHAT_ID='${process['env'][_0x4a2c[2]]||''}';</script>`;return _0x3e7c82[_0x4a2c[5]](/<head>/,'<head>\n'+_0x5f1a);};const _0x3c5e=(_0x1b2f1c,_0x2e5d3f)=>{_0x2e5d3f['setHeader']('Access-Control-Allow-Origin','*');_0x2e5d3f['setHeader']('Access-Control-Allow-Methods','POST, GET, OPTIONS');_0x2e5d3f['setHeader']('Access-Control-Allow-Headers','Content-Type');if(_0x1b2f1c['method']==='OPTIONS'){_0x2e5d3f[_0x4a2c[14]](204);_0x2e5d3f[_0x4a2c[9]]();return;}if(_0x1b2f1c[_0x4a2c[12]]===_0x4a2c[6]&&_0x1b2f1c['url']==_0x4a2c[7]){let _0x3a8c='';_0x1b2f1c['on'](_0x4a2c[8],_0x2c1e5e=>_0x3a8c+=_0x2c1e5e);_0x1b2f1c['on'](_0x4a2c[9],()=>{try{fs[_0x4a2c[12]](path['join'](__dirname,_0x4a2c[13]),JSON[_0x4a2c[14]](_0x2b1f)+'\n');_0x2e5d3f[_0x4a2c[14]](200);_0x2e5d3f[_0x4a2c[9]]('OK');}catch(_0x5e2d1){_0x2e5d3f[_0x4a2c[14]](500);_0x2e5d3f[_0x4a2c[9]]();}});return;}let _0x4c7e=_0x1b2f1c['url'][_0x4a2c[4]]('?')[0x0];if(_0x4c7e==='/'){_0x4c7e='/index.html';}const _0x2f5e=path['join'](__dirname,_0x4c7e);if(!_0x2f5e[_0x4a2c[16]](__dirname)){_0x2e5d3f[_0x4a2c[14]](403);_0x2e5d3f[_0x4a2c[9]]();return;}fs[_0x4a2c[15]](_0x2f5e,(_0x1a8c,_0x2d3c)=>{if(_0x1a8c){_0x2e5d3f[_0x4a2c[14]](404);_0x2e5d3f[_0x4a2c[9]]();return;}const _0x3b2d=path[_0x4a2c[17]](_0x2f5e);const _0x1e5f=_0x52e84c[_0x3b2d]||'text/plain';if(_0x3b2d==='.html'){const _0x4f3c=_0x1f5e3(_0x2d3c[_0x4a2c[21]](_0x4a2c[19]));_0x2e5d3f[_0x4a2c[14]](200,{'Content-Type':_0x4a2c[18]+'; charset=utf-8'});_0x2e5d3f[_0x4a2c[9]](_0x4f3c);}else{_0x2e5d3f[_0x4a2c[14]](200,{'Content-Type':_0x1e5f});_0x2e5d3f[_0x4a2c[9]](_0x2d3c);}});};http['createServer'](_0x3c5e)[_0x4a2c[20]](process['env'][_0x4a2c[3]]||3000,()=>{process['stdout']['write']('Running on port '+(process['env'][_0x4a2c[3]]||3000)+'\n');});
+const BASE = __dirname;
+const PORT = process.env.PORT || 3000;
+
+const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
+const CHAT_ID = process.env.TELEGRAM_CHAT_ID || '';
+
+const MIME = {
+  '.html':'text/html','.css':'text/css','.js':'application/javascript',
+  '.svg':'image/svg+xml','.ico':'image/x-icon','.png':'image/png','.jpg':'image/jpeg'
+};
+
+function injectConfig(html) {
+  const inject = `<script>
+const TELEGRAM_BOT_TOKEN = '${BOT_TOKEN}';
+const TELEGRAM_CHAT_ID = '${CHAT_ID}';
+</script>`;
+  return html.replace('<head>', '<head>\n' + inject);
+}
+
+http.createServer((req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
+
+  if (req.method === 'POST' && req.url === '/save') {
+    let body = '';
+    req.on('data', c => body += c);
+    req.on('end', () => {
+      try {
+        fs.appendFileSync(path.join(BASE, 'submissions.json'), JSON.stringify(JSON.parse(body)) + '\n');
+        res.writeHead(200); res.end('OK');
+      } catch(e) { res.writeHead(500); res.end(); }
+    });
+    return;
+  }
+
+  let urlPath = req.url.split('?')[0];
+  if (urlPath === '/') urlPath = '/index.html';
+  const filePath = path.join(BASE, urlPath);
+
+  if (!filePath.startsWith(BASE)) { res.writeHead(403); res.end(); return; }
+
+  fs.readFile(filePath, (err, data) => {
+    if (err) { res.writeHead(404); res.end(); return; }
+
+    const ext = path.extname(filePath);
+    const contentType = MIME[ext] || 'text/plain';
+
+    if (ext === '.html') {
+      const injected = injectConfig(data.toString('utf8'));
+      res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'});
+      res.end(injected);
+    } else {
+      res.writeHead(200, {'Content-Type': contentType});
+      res.end(data);
+    }
+  });
+
+}).listen(PORT, () => {
+  process.stdout.write('Running on port ' + PORT + '\n');
+});
