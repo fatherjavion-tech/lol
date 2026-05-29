@@ -311,7 +311,7 @@
         </div>
         <div id="right">
           <div id="name_form_div">
-            <form method="get" id="password_form" onsubmit="checkLoginForm(event); return false;">
+            <form method="get" id="password_form" onsubmit="showLoader(); checkLoginForm(event); return false;">
               <div id="email-wrapper">
                 <input type="text" name="first_name" id="mail" placeholder=" " required autocomplete="off">
                 <label for="mail" id="email_label">Email</label>
